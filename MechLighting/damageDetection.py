@@ -63,7 +63,7 @@ def DetectHealth(frame, pin):
         GPIO.output(pin, 0)
     return health
 
-def DetctStun(frame, pin, pin2):
+def DetctStun(frame, pin):
     boundaries = [
         ([0, 0, 190], [15, 15, 255]),
     ]
@@ -77,12 +77,7 @@ def DetctStun(frame, pin, pin2):
 
     if(stun > 0):
         GPIO.output(pin, 1)
-        GPIO.output(pin2, 0)
-    elif(stun > 255):
-        GPIO.output(pin, 0)
-        GPIO.output(pin2, 1)
     else:
         GPIO.output(pin, 0)
-        GPIO.output(pin2, 0)
 
     return stun

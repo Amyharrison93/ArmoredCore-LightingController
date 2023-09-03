@@ -1,10 +1,9 @@
 import RPi.GPIO as GPIO
 import ImagePreProcess as imgGet
 import damageDetection as dmgDetect
-healthLED = 23
-damageLED = 18
-stunLED = 24
-stunnedLED = 25
+healthIO = 23
+damageIO = 18
+stunIO = 24
 
 def ArmoredCore6(cam):
     frame = imgGet.ScaleAndCaptureFrame(cam)
@@ -13,9 +12,9 @@ def ArmoredCore6(cam):
 
     fwdWarning = imgGet.CropFrameDirectionForward(frame)
 
-    health = dmgDetect.DetectHealth(healthBar, healthLED)
-    dmgTaken = dmgDetect.DetectDamage(healthBar, damageLED)
-    stunTaken = dmgDetect.DetctStun(stunBar, stunLED, stunnedLED)
+    health = dmgDetect.DetectHealth(healthBar, healthIO)
+    dmgTaken = dmgDetect.DetectDamage(healthBar, damageIO)
+    stunTaken = dmgDetect.DetctStun(stunBar, stunIO)
 
     fwdWarn = dmgDetect.DamageDirection(fwdWarning)
         
