@@ -4,7 +4,7 @@ import math
 
 def DetectDamage(frame):
     boundaries = [
-        ([17, 15, 100], [50, 56, 200]),
+        ([0, 0, 150], [0, 0, 200]),
     ]
     for (lower, upper) in boundaries:
         # create NumPy arrays from the boundaries
@@ -12,10 +12,27 @@ def DetectDamage(frame):
         upper = np.array(upper, dtype = "uint8")
 
         mask = cv.inRange(frame, lower, upper)
-        return math.mean(mask)
+        
+        return np.mean(mask, axis=(0, 1))
+
+def DetectLowHealth(frame):
+    boundaries = [
+        ([0, 0, 200], [0, 0, 255]),
+    ]
+    for (lower, upper) in boundaries:
+        # create NumPy arrays from the boundaries
+        lower = np.array(lower, dtype = "uint8")
+        upper = np.array(upper, dtype = "uint8")
+
+        mask = cv.inRange(frame, lower, upper)
+
+        return np.mean(mask, axis=(0, 1))
         
 def DetectHealth(frame):
     frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-    frame = cv.threshold(frame,127,255,cv.THRESH_BINARY)
-    health = math.mean(frame)
+    ret, frame = cv.threshold(frame,127,255,cv.THRESH_BINARY)
+    health = np.mean(frame, axis=(0, 1))
+    if(health > 0):
+        health = health/255
+        health = health*100
     return health
