@@ -34,9 +34,14 @@ def CropToFit(frame):
     return frame
 
 def CropFrameHealth(frame):
-    print(np.shape(frame))
     frame = frame[448:449,65:235]
+    frame = cv.resize(frame, (960, 540))
+    cv.imshow("", frame)
     return frame
 
 def CropFrameStun(frame):
+    frame = frame[480 -240 : 480 -240 ,270 :540 - 67]
+    frame = cv.resize(frame, (960, 540))
+    cv.imshow("", frame)
+    cv.waitKey(1)
     return frame

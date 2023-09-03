@@ -33,6 +33,7 @@ def DetectLowHealth(frame, pin):
             GPIO.output(pin, 1)
         else:
             health = 0
+            GPIO.output(pin, 0)
         return health
 
 def DamageDirection(frame):
@@ -40,12 +41,13 @@ def DamageDirection(frame):
         ([0, 0, 200], [0, 0, 255]),
     ]
     for (lower, upper) in boundaries:
-        # create NumPy arrays from the boundaries
         lower = np.array(lower, dtype = "uint8")
         upper = np.array(upper, dtype = "uint8")
         mask = cv.inRange(frame, lower, upper)
         mask = cv.cvtColor(mask, cv.COLOR_BGR2GRAY)
         damage = np.mean(mask, axis=(0, 1))
+
+    return damage
         
 def DetectHealth(frame, pin):
     grey = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
