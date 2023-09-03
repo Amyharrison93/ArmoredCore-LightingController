@@ -3,6 +3,7 @@ import cv2 as cv
 import GreyCode
 import ImagePreProcess as imgGet
 import GPIOinitialise as gpioInit
+import damageDetection as dmgDetect
 
 gpioInit.GPIOModeSet()
 cam = imgGet.CamStart()
@@ -24,6 +25,13 @@ while 1:
         GPIO.output(18, 1)
         frame = imgGet.ScaleAndCaptureFrame(cam)
         healthBar = imgGet.CropFrameHealth(frame)
+        health = dmgDetect.DetectHealth(healthBar)
+        dmgTaken = dmgDetect.DetectDamage(healthBar)
+        print("damage taken = ", dmgTaken)
+        if(health < 1):
+            health = dmgDetect.DetectLowHealth(healthBar)
+            print("warning low health ALARM")
+        print("health remaining: ", health)
     elif(GameSelect == 2):
         #do mechwarrour stuff
         GPIO.output(23, 0)
