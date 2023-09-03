@@ -2,18 +2,22 @@ import cv2 as cv
 import numpy as np
 import RPi.GPIO as GPIO
 
-def DetectDamage(frame):
+def DetectDamage(frame, pin):
     boundaries = [
         ([0, 0, 150], [0, 0, 200]),
     ]
     for (lower, upper) in boundaries:
-        # create NumPy arrays from the boundaries
         lower = np.array(lower, dtype = "uint8")
         upper = np.array(upper, dtype = "uint8")
 
         mask = cv.inRange(frame, lower, upper)
-        
-        return np.mean(mask, axis=(0, 1))
+        dmgTaken = np.mean(mask, axis=(0, 1))
+
+        if(dmgTaken > 0):
+            GPIO.output(pin, 1)
+        else:
+            GPIO.output(pin, 0)
+    return dmgTaken
 
 def DetectLowHealth(frame, pin):
     boundaries = [
@@ -21,7 +25,6 @@ def DetectLowHealth(frame, pin):
     ]
     
     for (lower, upper) in boundaries:
-        # create NumPy arrays from the boundaries
         lower = np.array(lower, dtype = "uint8")
         upper = np.array(upper, dtype = "uint8")
 
@@ -34,7 +37,7 @@ def DetectLowHealth(frame, pin):
         else:
             health = 0
             GPIO.output(pin, 0)
-        return health
+    return health
 
 def DamageDirection(frame):
     boundaries = [
@@ -59,3 +62,27 @@ def DetectHealth(frame, pin):
     else:
         GPIO.output(pin, 0)
     return health
+
+def DetctStun(frame, pin, pin2):
+    boundaries = [
+        ([0, 0, 190], [15, 15, 255]),
+    ]
+    multiplier = 1
+    for (lower, upper) in boundaries:
+        lower = np.array(lower, dtype = "uint8")
+        upper = np.array(upper, dtype = "uint8")
+        mask = cv.inRange(frame, lower, upper)
+        stun = np.mean(mask, axis=(0, 1)) * multiplier
+        multiplier+= 1
+
+    if(stun > 0):
+        GPIO.output(pin, 1)
+        GPIO.output(pin2, 0)
+    elif(stun > 255):
+        GPIO.output(pin, 0)
+        GPIO.output(pin2, 1)
+    else:
+        GPIO.output(pin, 0)
+        GPIO.output(pin2, 0)
+
+    return stun
