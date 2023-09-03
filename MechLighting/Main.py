@@ -1,9 +1,11 @@
 import RPi.GPIO as GPIO
+import cv2 as cv
 import GreyCode
 import ImagePreProcess as imgGet
 import GPIOinitialise as gpioInit
 
 gpioInit.GPIOModeSet()
+cam = imgGet.CamStart()
 
 while 1:
     enc1 = GPIO.input(4)
@@ -15,14 +17,19 @@ while 1:
     GameSelect = GreyCode.gray_decode(greyCode)
     print(GameSelect)
 
+    GameSelect = 1
+
     if(GameSelect == 1):
         #do armored core stuff
         GPIO.output(18, 1)
-        frame = imgGet.ScaleAndCaptureFrame()
-        healthBar = imgGet.CropFrameHealth()
+        frame = imgGet.ScaleAndCaptureFrame(cam)
+        healthBar = imgGet.CropFrameHealth(frame)
     elif(GameSelect == 2):
         #do mechwarrour stuff
         GPIO.output(23, 0)
     
     if(GPIO.input(21) == 1):
         break
+    if cv.waitKey(1) == ord('q'):
+        break
+cv.destroyAllWindows()
