@@ -15,4 +15,3 @@ def ScaleAndCaptureFrame():
 def CropFrameHealth(frame):
     frame = frame[400:700,500:550]
     return frame
-
